@@ -7,8 +7,8 @@ pub enum Term {
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Clause {
-    head: Term,
-    body: Vec<Term>,
+    pub head: Term,
+    pub body: Vec<Term>,
 }
 
 impl Clause {
