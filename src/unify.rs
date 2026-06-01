@@ -107,3 +107,9 @@ pub fn unify(substitutions: Substitutions, term_1: &Term, term_2: &Term) -> Opti
         _ => None,
     }
 }
+
+pub fn compose(sub1: Substitutions, sub2: Substitutions) -> Substitutions {
+    sub1.into_iter()
+        .map(|(left, right)| (left, apply(sub2.clone(), &right)))
+        .collect()
+}
