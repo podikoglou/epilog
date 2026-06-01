@@ -113,3 +113,54 @@ pub fn compose(sub1: Substitutions, sub2: Substitutions) -> Substitutions {
         .map(|(left, right)| (left, apply(sub2.clone(), &right)))
         .collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use std::collections::HashMap;
+
+    use crate::{ast::Term, unify::unify};
+
+    #[test]
+    fn test_unify_f_x_a_with_f_b_y() {
+        // f(X, a) with f(b, Y) should yield {X→b, Y→a}
+        let t1 = Term::Compound(
+            "f".to_string(),
+            vec![Term::Var("X".to_string()), Term::Atom("a".to_string())],
+        );
+        let t2 = Term::Compound(
+            "f".to_string(),
+            vec![Term::Atom("b".to_string()), Term::Var("Y".to_string())],
+        );
+        let result = unify(HashMap::new(), &t1, &t2).unwrap();
+        assert_eq!(result.get("X"), Some(&Term::Atom("b".to_string())));
+        assert_eq!(result.get("Y"), Some(&Term::Atom("a".to_string())));
+    }
+
+    #[test]
+    fn test_unify_f_x_x_with_f_a_b_fails() {
+        // f(X, X) with f(a, b) should fail
+        let t1 = Term::Compound(
+            "f".to_string(),
+            vec![Term::Var("X".to_string()), Term::Var("X".to_string())],
+        );
+        let t2 = Term::Compound(
+            "f".to_string(),
+            vec![Term::Atom("a".to_string()), Term::Atom("b".to_string())],
+        );
+        assert!(unify(HashMap::new(), &t1, &t2).is_none());
+    }
+
+    #[test]
+    fn test_unify_occurs_check_fails() {
+        // f(X) with f(g(X)) should fail due to occurs check
+        let t1 = Term::Compound("f".to_string(), vec![Term::Var("X".to_string())]);
+        let t2 = Term::Compound(
+            "f".to_string(),
+            vec![Term::Compound(
+                "g".to_string(),
+                vec![Term::Var("X".to_string())],
+            )],
+        );
+        assert!(unify(HashMap::new(), &t1, &t2).is_none());
+    }
+}
