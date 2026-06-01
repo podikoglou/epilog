@@ -51,7 +51,7 @@ impl Display for Clause {
         } else {
             write!(
                 f,
-                "{} :- {}",
+                "{} :- {}.",
                 self.head,
                 self.body
                     .iter()
