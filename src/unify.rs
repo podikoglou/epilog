@@ -17,3 +17,11 @@ pub fn apply(substitutions: Substitutions, term: &Term) -> Term {
         ),
     }
 }
+
+pub fn var_occurs(var: &str, term: &Term) -> bool {
+    match term {
+        Term::Atom(_) => false,
+        Term::Var(var2) => var2 == var,
+        Term::Compound(_, terms2) => terms2.iter().any(|term| var_occurs(var, term)),
+    }
+}
