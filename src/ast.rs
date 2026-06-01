@@ -19,7 +19,9 @@ impl Display for Term {
                     atom,
                     terms
                         .iter()
-                        .fold(String::default(), |acc, term| format!("{}, {}", acc, term))
+                        .map(|term| term.to_string())
+                        .collect::<Vec<_>>()
+                        .join(", ")
                 )
             }
         }
@@ -53,7 +55,9 @@ impl Display for Clause {
                 self.head,
                 self.body
                     .iter()
-                    .fold(String::default(), |acc, term| format!("{}, {}", acc, term))
+                    .map(|term| term.to_string())
+                    .collect::<Vec<_>>()
+                    .join(", ")
             )
         }
     }
