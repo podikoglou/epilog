@@ -1,4 +1,5 @@
 pub mod ast;
+pub mod sld;
 pub mod unify;
 
 #[cfg(test)]
