@@ -63,7 +63,27 @@ fn main() {
         ),
     ];
 
-    for clause in clauses {
-        println!("{}", clause)
-    }
+    // pretty print clauses
+    let clauses_str = clauses
+        .iter()
+        .map(|clause| clause.to_string())
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    dbg!(&clauses_str);
+
+    // parse
+    let par = parser::ProgramParser::new();
+    let parsed_clauses = par.parse(&clauses_str).expect("syntax error");
+
+    // pretty print clauses
+    let parsed_clauses_str = parsed_clauses
+        .iter()
+        .map(|clause| clause.to_string())
+        .collect::<Vec<_>>()
+        .join("\n");
+
+    dbg!(&parsed_clauses_str);
+
+    dbg!(clauses_str == parsed_clauses_str);
 }
