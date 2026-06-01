@@ -40,7 +40,7 @@ pub fn var_occurs(var: &str, term: &Term) -> bool {
 /// 4. If both are compound terms with the same functor and arity, unify arguments pairwise.
 ///
 /// 5. Otherwise, fail (return None).
-fn unify(substitutions: Substitutions, term_1: &Term, term_2: &Term) -> Option<Substitutions> {
+pub fn unify(substitutions: Substitutions, term_1: &Term, term_2: &Term) -> Option<Substitutions> {
     match (term_1, term_2) {
         // 1. If both terms are the same variable, return the current substitution.
         (Term::Var(a), Term::Var(b)) if a == b => Some(substitutions),
