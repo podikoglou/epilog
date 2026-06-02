@@ -2,7 +2,7 @@ use std::{collections::HashMap, iter};
 
 use crate::ast::Term;
 
-type Substitutions = HashMap<String, Term>;
+pub type Substitutions = HashMap<String, Term>;
 
 pub fn apply(substitutions: Substitutions, term: &Term) -> Term {
     match term {
