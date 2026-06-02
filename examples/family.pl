@@ -1,5 +1,4 @@
 parent(john, mary).
-
 parent(john, david).
 parent(mary, alice).
 parent(david, bob).
