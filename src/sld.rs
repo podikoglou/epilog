@@ -1,3 +1,5 @@
+use std::iter;
+
 use crate::{
     ast::{Clause, Program, Term},
     unify::{self, Substitutions},
@@ -56,7 +58,9 @@ pub fn resolve(
     if goals.is_empty() {
         vec![substitutions]
     } else {
+        // get next goal and remove it from our goals
         let goal = &goals[0];
+        let goals = &goals[1..];
 
         // find all clauses whose heads unify with goal
         let clauses = program.iter().filter_map(|c| {
@@ -73,10 +77,26 @@ pub fn resolve(
         });
 
         clauses.map(|clause| {
+            // (a) Compute the MGU
             let mgu = clause.1;
             let clause = clause.0;
 
-            let goals = &goals[1..];
+            // (b) Apply it to the remaining goals.
+            let goals = goals
+                .iter()
+                .map(|goal| unify::apply(mgu.clone(), goal))
+                .collect::<Vec<Term>>();
+
+            // (c) Prepend the clause's body to the remaining goals.
+            let goals = clause
+                .body
+                .iter()
+                .chain(goals.iter())
+                .map(|g| g.clone())
+                .collect::<Vec<Term>>();
+
+            // (d) Recurse with the new goals and the composed substitution.
+            goals
         });
 
         todo!()
