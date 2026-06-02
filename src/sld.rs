@@ -1,5 +1,7 @@
 use crate::ast::{Clause, Term};
 
+/// Recursively appends a suffix "_n" where `n` is `suffix`
+/// to the name of every variable under the given term.
 fn rename_vars_in_term(term: &Term, suffix: usize) -> Term {
     match term {
         Term::Var(name) => Term::Var(format!("{}_{}", name.to_string(), suffix)),
@@ -15,6 +17,7 @@ fn rename_vars_in_term(term: &Term, suffix: usize) -> Term {
     }
 }
 
+/// Calls [`rename_vars_in_term`] for every term under `clause`.
 fn rename_vars(clause: &Clause, suffix: usize) -> Clause {
     let head = rename_vars_in_term(&clause.head, suffix);
 
