@@ -51,28 +51,33 @@ pub fn resolve(
     goals: &[Term],
     program: Program,
     substitutions: Substitutions,
+    suffix: usize,
 ) -> Vec<Substitutions> {
     if goals.is_empty() {
         vec![substitutions]
     } else {
-        // enumerate through each goal (`i` is used as a suffix)
+        let goal = &goals[0];
 
-        for (i, goal) in goals.iter().enumerate() {
-            let substitutions = substitutions.clone();
+        // find all clauses whose heads unify with goal
+        let clauses = program.iter().filter_map(|c| {
+            // rename this clause's variables using a suffix that's incremented every time we
+            // recurse
+            let clause = rename_vars(c, suffix);
 
-            // get the FIRST clause whose head unifies with this goal
-            let clause = program.iter().find_map(|c| {
-                // rename this clause's variables using i, which is the index of the goal
-                let clause_renamed = rename_vars(c, i);
+            // try to unify the goal with the head of this clause
+            // and map the optional substitutions that unify returns,
+            // to a tuple containing the clause (with renamed variables)
+            // and the substitutions
+            unify::unify(substitutions.clone(), goal, &clause.head)
+                .map(|substitutions| (clause, substitutions))
+        });
 
-                // try to unify the goal with the head of this clause
-                // and map the optional substitutions that unify returns,
-                // to a tuple containing the clause (with renamed variables)
-                // and the substitutions
-                unify::unify(substitutions.clone(), goal, &clause_renamed.head)
-                    .map(|substitutions| (c, substitutions))
-            });
-        }
+        clauses.map(|clause| {
+            let mgu = clause.1;
+            let clause = clause.0;
+
+            let goals = &goals[1..];
+        });
 
         todo!()
     }
