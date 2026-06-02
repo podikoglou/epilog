@@ -8,8 +8,8 @@ pub fn apply(substitutions: Substitutions, term: &Term) -> Term {
     match term {
         Term::Atom(_) => term.clone(),
         Term::Var(var) => substitutions.get(var).unwrap_or(term).clone(),
-        Term::Compound(atom, terms) => Term::Compound(
-            atom.clone(),
+        Term::Compound(functor, terms) => Term::Compound(
+            functor.clone(),
             terms
                 .iter()
                 .map(|term| apply(substitutions.clone(), term))
