@@ -1,4 +1,7 @@
-use crate::ast::{Clause, Term};
+use crate::{
+    ast::{Clause, Program, Term},
+    unify::Substitutions,
+};
 
 /// Recursively appends a suffix "_n" where `n` is `suffix`
 /// to the name of every variable under the given term.
@@ -32,6 +35,24 @@ fn rename_vars(clause: &Clause, suffix: usize) -> Clause {
 
         Clause::rule(head, body)
     }
+}
+
+/// Resolves some goals using SLD Resolution.
+///
+/// 1. If `goals` is empty yield the current substitutions.
+/// 2. Otherwise, take the first goal. For each clause in the program whose head unifies with the
+///    goal (after renaming the clause's variables):
+///    a. Compute the MGU
+///    b. Apply it to the remaining goals
+///    c. Prepend the clause's body to the remaining goals.
+///    d. Recurse with the new goals and the composed substitutions.
+/// 3. Collect all successful substitutions into a vector and return it.
+pub fn resolve(
+    goals: &[Term],
+    program: Program,
+    substitutions: Substitutions,
+) -> Vec<Substitutions> {
+    todo!()
 }
 
 #[cfg(test)]
