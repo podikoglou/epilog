@@ -62,3 +62,5 @@ impl Display for Clause {
         }
     }
 }
+
+pub type Program = Vec<Clause>;
