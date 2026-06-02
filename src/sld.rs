@@ -1,6 +1,6 @@
 use crate::{
     ast::{Clause, Program, Term},
-    unify::Substitutions,
+    unify::{self, Substitutions},
 };
 
 /// Recursively appends a suffix "_n" where `n` is `suffix`
@@ -52,7 +52,30 @@ pub fn resolve(
     program: Program,
     substitutions: Substitutions,
 ) -> Vec<Substitutions> {
-    todo!()
+    if goals.is_empty() {
+        vec![substitutions]
+    } else {
+        // enumerate through each goal (`i` is used as a suffix)
+
+        for (i, goal) in goals.iter().enumerate() {
+            let substitutions = substitutions.clone();
+
+            // get the FIRST clause whose head unifies with this goal
+            let clause = program.iter().find_map(|c| {
+                // rename this clause's variables using i, which is the index of the goal
+                let clause_renamed = rename_vars(c, i);
+
+                // try to unify the goal with the head of this clause
+                // and map the optional substitutions that unify returns,
+                // to a tuple containing the clause (with renamed variables)
+                // and the substitutions
+                unify::unify(substitutions.clone(), goal, &clause_renamed.head)
+                    .map(|substitutions| (c, substitutions))
+            });
+        }
+
+        todo!()
+    }
 }
 
 #[cfg(test)]
