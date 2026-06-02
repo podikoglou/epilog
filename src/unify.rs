@@ -90,7 +90,7 @@ pub fn unify(substitutions: Substitutions, term_1: &Term, term_2: &Term) -> Opti
 
         // 4. If both are compound terms with the same functor and arity, unify arguments pairwise.
         (Term::Compound(functor_left, args_left), Term::Compound(functor_right, args_right))
-            if functor_left == functor_right && args_right.len() == args_right.len() =>
+            if functor_left == functor_right && args_left.len() == args_right.len() =>
         {
             // iterator yielding pairs of args (arg_left, arg_right)
             let args = args_left.iter().zip(args_right.iter());
