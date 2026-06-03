@@ -62,18 +62,14 @@ fn roundtrip() {
         ),
     ];
 
-    // pretty print clauses
     let clauses_str = clauses
         .iter()
         .map(|clause| clause.to_string())
         .collect::<Vec<_>>()
         .join("\n");
 
-    // parse
-    let par = parser::ProgramParser::new();
-    let parsed_clauses = par.parse(&clauses_str).expect("syntax error");
+    let parsed_clauses = parser::parse(&clauses_str).expect("syntax error");
 
-    // pretty print clauses
     let parsed_clauses_str = parsed_clauses
         .iter()
         .map(|clause| clause.to_string())
